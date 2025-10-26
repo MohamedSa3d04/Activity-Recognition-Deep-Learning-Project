@@ -1,4 +1,6 @@
 import argparse
+import cv2
+import matplotlib.pyplot as plt
 def parse_track_annotation_line(line):
     parts = line.strip().split()
     pid = int(parts[0]) #Playaer_id
@@ -18,10 +20,10 @@ def parse_track_annotation_line(line):
         "action": action
     }
 
+def get_all_frames_from_clip(clip_path):
+    pass
 
 
-import cv2
-import matplotlib.pyplot as plt
 
 def draw_annotations(frame_path, annotations):
     """
@@ -57,5 +59,5 @@ def get_player_annotation(clip_dir):
             data = parse_track_annotation_line(line)
             print(data)
 
-        if data["frame"] == 3586:  # visualize a specific frame
-            draw_annotations("frames/3586.jpg", [data])
+        if data["frame"] == 13286:  # visualize a specific frame
+            draw_annotations("/content/drive/MyDrive/proj_dl_data/data/videos/0/13286/13286.jpg", [data])
