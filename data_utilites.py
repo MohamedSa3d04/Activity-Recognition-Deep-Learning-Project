@@ -37,14 +37,15 @@ def draw_annotations(frame_path, annotations):
         x1, y1, x2, y2 = ann["bbox"]
         pid = ann["player_id"]
         action = ann["action"]
+        color = (0, 255, 0) if ann["team"] == 0 else (255, 0, 0)
 
         # draw rectangle
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2, color=color)
 
         # label text: player id + action
         label = f"ID:{pid} | {action}"
         cv2.putText(img, label, (x1, y1 - 10), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1, cv2.LINE_AA, color=color)
 
     plt.figure(figsize=(10, 6))
     plt.imshow(img)
@@ -54,10 +55,13 @@ def draw_annotations(frame_path, annotations):
 
 
 def get_player_annotation(clip_dir):
+    all_annotations = []
     with open(clip_dir) as f:
         for line in f:
             data = parse_track_annotation_line(line)
             print(data)
 
             if data["frame"] == 13286:  # visualize a specific frame
-                draw_annotations("/content/drive/MyDrive/proj_dl_data/data/videos/0/13286/13286.jpg", [data])
+                all_annotations.append(data)
+        
+        draw_annotations("/content/drive/MyDrive/proj_dl_data/data/videos/0/13286/13286.jpg", [all_annotations])
