@@ -1,6 +1,7 @@
 import argparse
 
 def try_fun(name):
+    print("Hi")
     return name
 
 
