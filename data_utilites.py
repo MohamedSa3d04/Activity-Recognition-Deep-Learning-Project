@@ -40,12 +40,12 @@ def draw_annotations(frame_path, annotations):
         color = (0, 255, 0) if ann["tgeam"] == 0 else (255, 0, 0)
 
         # draw rectangle
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2, color=color)
+        cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
 
         # label text: player id + action
         label = f"ID:{pid} | {action}"
         cv2.putText(img, label, (x1, y1 - 10), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1, cv2.LINE_AA, color=color)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1, cv2.LINE_AA)
 
     plt.figure(figsize=(10, 6))
     plt.imshow(img)
