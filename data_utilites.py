@@ -37,7 +37,7 @@ def draw_annotations(frame_path, annotations):
         x1, y1, x2, y2 = ann["bbox"]
         pid = ann["player_id"]
         action = ann["action"]
-        color = (0, 255, 0) if ann["team"] == 0 else (255, 0, 0)
+        color = (0, 255, 0) if ann["tgeam"] == 0 else (255, 0, 0)
 
         # draw rectangle
         cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2, color=color)
