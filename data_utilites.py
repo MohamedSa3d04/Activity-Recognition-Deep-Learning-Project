@@ -64,4 +64,4 @@ def get_player_annotation(clip_dir):
             if data["frame"] == 13286:  # visualize a specific frame
                 all_annotations.append(data)
         
-        draw_annotations("/content/drive/MyDrive/proj_dl_data/data/videos/0/13286/13286.jpg", [all_annotations])
+        draw_annotations("/content/drive/MyDrive/proj_dl_data/data/videos/0/13286/13286.jpg", all_annotations)
