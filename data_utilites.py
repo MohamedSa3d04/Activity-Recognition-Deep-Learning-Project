@@ -12,11 +12,44 @@ def parse_track_annotation_line(line):
         "player_id": pid,
         "bbox": (x1, y1, x2, y2),
         "frame": frame,
-        "team": team,
+        "tgeam": team,
         "visible": bool(visible),
         "pose_index": pose,
         "action": action
     }
+
+
+
+import cv2
+import matplotlib.pyplot as plt
+
+def draw_annotations(frame_path, annotations):
+    """
+    Draw bounding boxes and labels for each player on a given frame.
+    annotations: list of dicts from parse_track_annotation_line()
+    """
+    img = cv2.imread(frame_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    for ann in annotations:
+        x1, y1, x2, y2 = ann["bbox"]
+        pid = ann["player_id"]
+        action = ann["action"]
+
+        # draw rectangle
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+        # label text: player id + action
+        label = f"ID:{pid} | {action}"
+        cv2.putText(img, label, (x1, y1 - 10), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1, cv2.LINE_AA)
+
+    plt.figure(figsize=(10, 6))
+    plt.imshow(img)
+    plt.axis('off')
+    plt.show()
+
+
 
 def get_player_annotation(clip_dir):
     with open(clip_dir) as f:
@@ -24,3 +57,5 @@ def get_player_annotation(clip_dir):
             data = parse_track_annotation_line(line)
             print(data)
 
+        if data["frame"] == 3586:  # visualize a specific frame
+            draw_annotations("frames/3586.jpg", [data])
