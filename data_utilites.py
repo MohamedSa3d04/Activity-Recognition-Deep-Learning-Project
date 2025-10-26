@@ -18,11 +18,9 @@ def parse_track_annotation_line(line):
         "action": action
     }
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--clip_dir')
-parser.parse_args()
-with open(f"{parser.clip_dir}") as f:
-    for line in f:
-        data = parse_track_annotation_line(line)
-        print(data)
+def get_player_annotation(clip_dir):
+    with open(clip_dir) as f:
+        for line in f:
+            data = parse_track_annotation_line(line)
+            print(data)
 
