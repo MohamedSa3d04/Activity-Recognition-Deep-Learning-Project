@@ -36,7 +36,7 @@ def get_video_annotations_dictionary(vid_path):
             parts = line.strip().split()
             clip_name = parts[0]
             target = parts[1]
-            annotations_dir[clip_name] = target
+            annotations_dictionary[clip_name] = target
     
     return annotations_dictionary
 
@@ -44,9 +44,9 @@ def parsing_scense_annotations(main_path):
     '''
     In follwing punch of codes, I will try to have all mid-frame ids and annotation (scene-level)
     from each clip from each video (Used for BaseLine 1)!
-    '''
-    resnet = models.resnet50(pretrained=True)
-    feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
+    # '''
+    # resnet = models.resnet50(pretrained=True)
+    # feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
 
     videos_folders = os.listdir(main_path) # all folder in the main path folder
     for video_name in videos_folders:
