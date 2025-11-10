@@ -70,7 +70,7 @@ def parsing_scense_annotations(main_path):
     images_array = np.array(images)
     images_array = np.transpose(images_array, (0, 3, 1, 2))
     images_tensor = torch.tensor(images_array, dtype=torch.float32) / 255.0
-    print(images_tensor)
+    print(images_tensor.shape)
 
 
 
