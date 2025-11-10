@@ -66,7 +66,6 @@ def parsing_scense_annotations(main_path):
                 img = cv2.resize(img, (224, 224))            # resize for ResNet
                 images.append(img)
                 # print(video_annotation[frame])
-        break
     images_array = np.array(images)
     images_array = np.transpose(images_array, (0, 3, 1, 2))
     images_tensor = torch.tensor(images_array, dtype=torch.float32) / 255.0
