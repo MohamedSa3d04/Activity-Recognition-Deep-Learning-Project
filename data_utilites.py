@@ -36,6 +36,7 @@ def get_video_annotations_dictionary(vid_path):
             parts = line.strip().split()
             clip_name = parts[0]
             target = parts[1]
+            print(annotations_dictionary)
             annotations_dictionary[clip_name] = target
     
     return annotations_dictionary
