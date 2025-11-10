@@ -3,6 +3,8 @@ import cv2
 import csv
 import matplotlib.pyplot as plt
 import os
+import torch
+import torchvision.models as models
 def parse_track_annotation_line(line):
     '''
     Get the annotations for each player which represented as a line
@@ -25,21 +27,39 @@ def parse_track_annotation_line(line):
         "action": action
     }
 
+
+def get_video_annotations_dictionary(vid_path):
+    annotations_dir = os.path.join(vid_path, 'annotations.txt')
+    annotations_dictionary = {}
+    with open(annotations_dir) as annotations:
+        for line in annotations:
+            parts = line.strip().split()
+            clip_name = parts[0]
+            target = parts[1]
+            annotations_dir[clip_name] = target
+    
+    return annotations_dictionary
+
 def parsing_scense_annotations(main_path):
     '''
     In follwing punch of codes, I will try to have all mid-frame ids and annotation (scene-level)
     from each clip from each video (Used for BaseLine 1)!
     '''
+    resnet = models.resnet50(pretrained=True)
+    feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
+
     videos_folders = os.listdir(main_path) # all folder in the main path folder
     for video_name in videos_folders:
-        cur_vid = os.path.join(main_path, video_name)
+        cur_vid = os.path.join(main_path, video_name) #Having annotations.txt
+        video_annotation = get_video_annotations_dictionary(cur_vid)
         clips_folders= [clip_name for clip_name in os.listdir(cur_vid) if os.path.isdir(os.path.join(cur_vid, clip_name))] # all clips in the current folder
         for clip_name in clips_folders:
             cur_clip = os.path.join(cur_vid, clip_name) # cur_clip path
             clip_frames = os.listdir(cur_clip) # all frames in the current clip
             targeted_frame = clip_frames[len(clip_frames) // 2] # 180140
             print(targeted_frame)
-            print(clip_frames)
+            print(video_annotation[targeted_frame])
+    
 
 
 
