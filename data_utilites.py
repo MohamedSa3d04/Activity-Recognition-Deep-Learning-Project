@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import os
 import torch
 import torchvision.models as models
+import torchvision.transforms as transforms
 import numpy as np
 
 def parse_track_annotation_line(line):
@@ -47,31 +48,48 @@ def parsing_scense_annotations(main_path):
     In follwing punch of codes, I will try to have all mid-frame ids and annotation (scene-level)
     from each clip from each video (Used for BaseLine 1)!
     # '''
-    # resnet = models.resnet50(pretrained=True)
-    # feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
+    resnet = models.resnet50(pretrained=True)
+    feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
+    preprocess = transforms.Compose([
+        transforms.ToPILImage(),
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                             std=[0.229, 0.224, 0.225])
+    ])
 
     videos_folders = os.listdir(main_path) # all folder in the main path folder
     for video_name in videos_folders:
         images = []
+        labels = []
         cur_vid = os.path.join(main_path, video_name) #Having annotations.txt
         video_annotation = get_video_annotations_dictionary(cur_vid)
         clips_folders = [clip_name for clip_name in os.listdir(cur_vid) if os.path.isdir(os.path.join(cur_vid, clip_name))] # getting all the clips in the vdieo dir
         for clip_name in clips_folders: # Moving in each clip in the video
             cur_clip = os.path.join(cur_vid, clip_name) # cur_clip path
             clip_frames = [frame_name for frame_name in os.listdir(cur_clip) if frame_name in video_annotation] # all frames in the current clip
+            
             for frame in clip_frames: # Moving in each frame (only annotated) in the clip
                 frame_path = os.path.join(cur_clip, frame)
                 img = cv2.imread(frame_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)   # convert to RGB
-                img = cv2.resize(img, (224, 224))            # resize for ResNet
-                images.append(img)
-                # print(video_annotation[frame])
-    images_array = np.array(images)
-    images_array = np.transpose(images_array, (0, 3, 1, 2))
-    images_tensor = torch.tensor(images_array, dtype=torch.float32) / 255.0
-    print(images_tensor.shape)
+                img_tensor = preprocess(img).unsqueeze(0)
 
+                with torch.no_grad():
+                    featrues = feature_extractor(img_tensor)
+                    featrues = featrues.view(2048).numpy()
 
+                images.append(featrues) 
+                labels.append(video_annotation[frame])
+
+    # Convert lists to arrays
+    features_arr = np.array(images)           # shape (N, 2048)
+    labels_arr = np.array(labels)               # shape (N,)
+
+    # Save them in one file
+    save_path = '/content/drive/MyDrive/proj_dl_data/data/images_features_labeld'
+    np.savez(save_path, features=features_arr, labels=labels_arr)
+    print(f"Saved: {save_path}")
 
 
 
