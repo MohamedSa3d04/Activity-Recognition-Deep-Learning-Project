@@ -81,7 +81,7 @@ def parsing_scense_annotations(main_path):
 
                 with torch.no_grad():
                     featrues = feature_extractor(img_tensor)
-                    featrues = featrues.view(2048).cpu().numpy()
+                    featrues = featrues.view(2048).numpy()
 
                 images.append(featrues) 
                 labels.append(video_annotation[frame])
