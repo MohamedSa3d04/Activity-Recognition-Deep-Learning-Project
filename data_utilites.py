@@ -7,6 +7,7 @@ import torch
 import torchvision.models as models
 import torchvision.transforms as transforms
 import numpy as np
+from tqdm import tqdm
 
 def parse_track_annotation_line(line):
     '''
@@ -59,7 +60,7 @@ def parsing_scense_annotations(main_path):
     ])
 
     videos_folders = os.listdir(main_path) # all folder in the main path folder
-    for video_name in videos_folders:
+    for video_name in tqdm(videos_folders):
         images = []
         labels = []
         cur_vid = os.path.join(main_path, video_name) #Having annotations.txt
