@@ -49,7 +49,7 @@ def parsing_scense_annotations(main_path):
     In follwing punch of codes, I will try to have all mid-frame ids and annotation (scene-level)
     from each clip from each video (Used for BaseLine 1)!
     # '''
-    resnet = models.resnet50(pretrained=True)
+    resnet = models.resnet50(pretrained=False)
     feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
     preprocess = transforms.Compose([
         transforms.ToPILImage(),
