@@ -49,12 +49,11 @@ def parsing_scense_annotations(main_path):
     In follwing punch of codes, I will try to have all mid-frame ids and annotation (scene-level)
     from each clip from each video (Used for BaseLine 1)!
     # '''
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print("Using:", device)
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # print("Using:", device)
 
     resnet = models.resnet50(pretrained=True)
     feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
-    feature_extractor = feature_extractor.to(device)
     preprocess = transforms.Compose([
         transforms.ToPILImage(),
         transforms.Resize((224, 224)),
@@ -78,7 +77,7 @@ def parsing_scense_annotations(main_path):
                 frame_path = os.path.join(cur_clip, frame)
                 img = cv2.imread(frame_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)   # convert to RGB
-                img_tensor = preprocess(img).unsqueeze(0).to(device)
+                img_tensor = preprocess(img).unsqueeze(0)
 
                 with torch.no_grad():
                     featrues = feature_extractor(img_tensor)
