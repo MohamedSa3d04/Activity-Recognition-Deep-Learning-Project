@@ -66,7 +66,7 @@ def parsing_scense_annotations(main_path):
                     frame_path = os.path.join(cur_clip, frame)
                     img = Image.open(frame_path).convert('RGB')
                     img_tensor = preprocessor(img).unsqueeze(0)
-                    ann = video_annotation[frame].numpy()
+                    ann = video_annotation[frame]
 
                     featrues = model(img_tensor) #(T, 2048, 1, 1)
                     featrues = featrues.view(2048, -1).numpy()
@@ -75,7 +75,7 @@ def parsing_scense_annotations(main_path):
                     save_path = os.path.join(cur_clip, 'frames_features_extracted', frame)
                     if not os.path.exists(save_path):
                         os.makedirs(save_path)
-                    np.savez(save_path, features=featrues, labels=ann)
+                    np.savez(save_path, features=featrues, labels=np.array([ann]))
                     print(f"Saved: {save_path}")
                     
     except Exception as e:
