@@ -69,7 +69,7 @@ def parsing_scense_annotations(main_path):
                     ann = video_annotation[frame]
 
                     featrues = model(img_tensor.to(device)) #(T, 2048, 1, 1)
-                    featrues = featrues.view(2048, -1).cpu().numpy()
+                    featrues = featrues.view(2048, -1).cpu().detach().numpy()
 
 
                     save_path = os.path.join(cur_clip, 'frames_features_extracted', frame)
