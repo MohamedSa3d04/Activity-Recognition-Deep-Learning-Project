@@ -73,7 +73,7 @@ def parsing_scense_annotations(main_path):
 
 
                     save_path = os.path.join(cur_clip, 'frames_features_extracted')
-                    if os.path.exists(save_path):
+                    if not os.path.exists(save_path):
                         os.makedirs(save_path)
                     np.savez(os.path.join(save_path, frame[:-4]), features=featrues, labels=np.array([ann]))
                     print(f"Saved: {save_path}")
