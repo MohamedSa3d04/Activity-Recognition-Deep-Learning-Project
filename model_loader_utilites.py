@@ -51,7 +51,7 @@ def preprocess_images(image_level=True):
     feature_extractor = feature_extractor.to(device)
     feature_extractor.eval()
 
-    return preprocessor, feature_extractor
+    return preprocessor, feature_extractor, device
 
 
     

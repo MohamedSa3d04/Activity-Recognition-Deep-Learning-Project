@@ -50,7 +50,7 @@ def parsing_scense_annotations(main_path):
     from each clip from each video (Used for BaseLine 1)!
     # '''
     try:
-        preprocessor, model = preprocess_images()
+        preprocessor, model, device = preprocess_images()
         videos_folders = os.listdir(main_path) # all folder in the main path folder
         for video_name in tqdm(videos_folders):
 
@@ -68,7 +68,7 @@ def parsing_scense_annotations(main_path):
                     img_tensor = preprocessor(img).unsqueeze(0)
                     ann = video_annotation[frame]
 
-                    featrues = model(img_tensor) #(T, 2048, 1, 1)
+                    featrues = model(img_tensor.to(device)) #(T, 2048, 1, 1)
                     featrues = featrues.view(2048, -1).numpy()
 
 
