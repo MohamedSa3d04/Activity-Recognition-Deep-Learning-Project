@@ -49,11 +49,13 @@ def parsing_scense_annotations(main_path):
     In follwing punch of codes, I will try to have all mid-frame ids and annotation (scene-level)
     from each clip from each video (Used for BaseLine 1)!
     # '''
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # print("Using:", device)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("Using:", device)
 
     resnet = models.resnet50(pretrained=True)
     feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
+    feature_extractor = feature_extractor.to(device)
+    feature_extractor.eval()
     preprocess = transforms.Compose([
         transforms.ToPILImage(),
         transforms.Resize((224, 224)),
@@ -63,12 +65,16 @@ def parsing_scense_annotations(main_path):
     ])
 
     videos_folders = os.listdir(main_path) # all folder in the main path folder
+    images = []
+    labels = []
+
     for video_name in tqdm(videos_folders):
-        images = []
-        labels = []
+        img_tensors = []
+        clip_labels = []
         cur_vid = os.path.join(main_path, video_name) #Having annotations.txt
         video_annotation = get_video_annotations_dictionary(cur_vid)
         clips_folders = [clip_name for clip_name in os.listdir(cur_vid) if os.path.isdir(os.path.join(cur_vid, clip_name))] # getting all the clips in the vdieo dir
+
         for clip_name in clips_folders: # Moving in each clip in the video
             cur_clip = os.path.join(cur_vid, clip_name) # cur_clip path
             clip_frames = [frame_name for frame_name in os.listdir(cur_clip) if frame_name in video_annotation] # all frames in the current clip
@@ -79,19 +85,25 @@ def parsing_scense_annotations(main_path):
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)   # convert to RGB
                 img_tensor = preprocess(img).unsqueeze(0)
 
-                with torch.no_grad():
-                    featrues = feature_extractor(img_tensor)
-                    featrues = featrues.view(2048).numpy()
+                img_tensors.append(img_tensor) # Having all frames tensors for each video 
+                clip_labels.append(video_annotation[frame]) 
 
-                images.append(featrues) 
-                labels.append(video_annotation[frame])
+        img_tensors = torch.cat(img_tensors, dim=0)
+        with torch.no_grad():
+            featrues = feature_extractor(img_tensors.to(device)) #(T, 2048, 1, 1)
+            featrues = featrues.view(len(img_tensors), 2048)
+            featrues = featrues.cpu().numpy()
+
+        images.extend(featrues) 
+        labels.extend(clip_labels)
+            
 
     # Convert lists to arrays
     features_arr = np.array(images)           # shape (N, 2048)
     labels_arr = np.array(labels)               # shape (N,)
 
     # Save them in one file
-    save_path = '/content/drive/MyDrive/proj_dl_data/data/images_features_labeld'
+    save_path = '/content/drive/MyDrive/proj_dl_data/data/images_features_labeld.npz'
     np.savez(save_path, features=features_arr, labels=labels_arr)
     print(f"Saved: {save_path}")
 
