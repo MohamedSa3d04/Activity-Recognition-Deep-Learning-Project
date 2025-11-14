@@ -45,7 +45,7 @@ def preprocess_images(image_level=True):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using:", device)
     
-    resnet = models.resnet50(pretraiend=True)
+    resnet = models.resnet50(pretrained=True)
 
     feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
     feature_extractor = feature_extractor.to(device)

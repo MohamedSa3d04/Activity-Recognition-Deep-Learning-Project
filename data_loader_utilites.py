@@ -70,7 +70,8 @@ def parsing_scense_annotations(main_path):
 
                     featrues = model(img_tensor) #(T, 2048, 1, 1)
                     featrues = featrues.view(2048, -1).numpy()
-                    
+
+
                     save_path = os.path.join(cur_clip, 'frames_features_extracted', frame)
                     if not os.path.exists(save_path):
                         os.makedirs(save_path)
