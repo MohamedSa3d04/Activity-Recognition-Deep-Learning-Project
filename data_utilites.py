@@ -67,19 +67,23 @@ def parsing_scense_annotations(main_path):
     videos_folders = os.listdir(main_path) # all folder in the main path folder
     images = []
     labels = []
-
+    i = 1
     for video_name in tqdm(videos_folders):
         img_tensors = []
         clip_labels = []
         cur_vid = os.path.join(main_path, video_name) #Having annotations.txt
         video_annotation = get_video_annotations_dictionary(cur_vid)
         clips_folders = [clip_name for clip_name in os.listdir(cur_vid) if os.path.isdir(os.path.join(cur_vid, clip_name))] # getting all the clips in the vdieo dir
-
+        i *= len(videos_folders)
         for clip_name in clips_folders: # Moving in each clip in the video
+            i *= len(clips_folders)
             cur_clip = os.path.join(cur_vid, clip_name) # cur_clip path
             clip_frames = [frame_name for frame_name in os.listdir(cur_clip) if frame_name in video_annotation] # all frames in the current clip
             
             for frame in clip_frames: # Moving in each frame (only annotated) in the clip
+                i *= len(clip_frames)
+                print(i)
+                
                 frame_path = os.path.join(cur_clip, frame)
                 img = cv2.imread(frame_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)   # convert to RGB
