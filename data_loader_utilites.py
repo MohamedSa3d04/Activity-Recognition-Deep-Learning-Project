@@ -75,7 +75,7 @@ def parsing_scense_annotations(main_path):
                     save_path = os.path.join(cur_clip, 'frames_features_extracted', frame)
                     if os.path.exists(save_path):
                         print(f'{save_path} deleted!')
-                        os.remove(save_path)
+                        os.removedirs(save_path)
                     # np.savez(save_path, features=featrues, labels=np.array([ann]))
                     # print(f"Saved: {save_path}")
                     
