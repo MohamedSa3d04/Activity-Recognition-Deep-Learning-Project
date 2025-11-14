@@ -81,7 +81,7 @@ def parsing_scense_annotations(main_path):
             clip_frames = [frame_name for frame_name in os.listdir(cur_clip) if frame_name in video_annotation] # all frames in the current clip
             
             for frame in clip_frames: # Moving in each frame (only annotated) in the clip
-                i *= len(clip_frames)
+                i = len(clip_frames)
                 print(i)
                 
                 frame_path = os.path.join(cur_clip, frame)
