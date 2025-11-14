@@ -72,12 +72,11 @@ def parsing_scense_annotations(main_path):
                     featrues = featrues.view(2048, -1).cpu().detach().numpy()
 
 
-                    save_path = os.path.join(cur_clip, 'frames_features_extracted', frame)
+                    save_path = os.path.join(cur_clip, 'frames_features_extracted')
                     if os.path.exists(save_path):
-                        print(f'{save_path} deleted!')
-                        os.removedirs(save_path)
-                    # np.savez(save_path, features=featrues, labels=np.array([ann]))
-                    # print(f"Saved: {save_path}")
+                        os.makedirs(save_path)
+                    np.savez(os.path.join(save_path, frame[:-4]), features=featrues, labels=np.array([ann]))
+                    print(f"Saved: {save_path}")
                     
     except Exception as e:
             print(f"An error occurred: {e}")
