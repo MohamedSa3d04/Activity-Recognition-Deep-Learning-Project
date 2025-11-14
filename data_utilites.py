@@ -73,9 +73,10 @@ def parsing_scense_annotations(main_path):
         cur_vid = os.path.join(main_path, video_name) #Having annotations.txt
         video_annotation = get_video_annotations_dictionary(cur_vid)
         clips_folders = [clip_name for clip_name in os.listdir(cur_vid) if os.path.isdir(os.path.join(cur_vid, clip_name))] # getting all the clips in the vdieo dir
-        print('vids:', len(videos_folders))
+        print('vidssss:', len(videos_folders))
         for clip_name in clips_folders: # Moving in each clip in the video
             print('clips:', len(clips_folders))
+            print('vidssss:', len(videos_folders))
             cur_clip = os.path.join(cur_vid, clip_name) # cur_clip path
             clip_frames = [frame_name for frame_name in os.listdir(cur_clip) if frame_name in video_annotation] # all frames in the current clip
             
