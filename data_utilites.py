@@ -33,6 +33,9 @@ def parse_track_annotation_line(line):
 
 # Give me the video path - Return you all clips annotations in annotations.txt file
 def get_video_annotations_dictionary(vid_path):
+    if os.path.exists(os.path.join(vid_path, 'annotations.txt')):
+        print(f'{vid_path[-1: -2]} not have annotations.txt') # Some videos don't have annotations.txt
+        return None
     annotations_dir = os.path.join(vid_path, 'annotations.txt')
     annotations_dictionary = {}
     with open(annotations_dir) as annotations: 
@@ -100,11 +103,18 @@ def get_frame_paths(main_path):
         for video_name in tqdm(videos_folders):
             cur_vid_path = os.path.join(main_path, video_name) #Having annotations.txt
             clips_annotations = get_video_annotations_dictionary(cur_vid_path)
+
+            if not clips_annotations: # Skip the videos that dosen't have annotations
+                continue
+
             for frame_name in clips_annotations: # Moving in each clip in the video
                 frame_path = os.path.join(cur_vid_path, frame_name[-4], frame_name) #frame_name[-4] => Clip Name
                 frame_target = clips_annotations[frame_name]
                 frames_paths_tragets.append((frame_path, frame_target))
-            
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+                
         return frames_paths_tragets
 
                 
