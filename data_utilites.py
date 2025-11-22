@@ -115,7 +115,7 @@ def get_frame_paths(main_path):
     except Exception as e:
         print(f"An error occurred: {e}")
                 
-        return frames_paths_tragets
+    return frames_paths_tragets
 
                 
                
