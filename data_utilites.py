@@ -119,10 +119,7 @@ def get_frame_paths(main_path):
 
                 
                
-                    
-    except Exception as e:
-            print(f"An error occurred: {e}")
-       
+
     
 
 
