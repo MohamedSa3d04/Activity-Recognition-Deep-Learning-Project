@@ -3,7 +3,7 @@ import torch.nn as nn
 from torchvision.transforms import transforms
 from torch.utils.data import Dataset, DataLoader
 from data_utilites import get_frame_paths
-import cv2, os
+from PIL import Image
 
 
 class Data_Loader_BL1(Dataset):
@@ -37,10 +37,7 @@ class Data_Loader_BL1(Dataset):
         frame_path, target = self.frames_paths_tragets[index]
 
         # Read The Frame
-        print(frame_path)
-        print(os.path.exists(frame_path))
-        frame = cv2.imread(frame_path)
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) #To RGB
+        frame = Image.open(frame_path).convert('RGB')
         frame_tensor = self.preprocessor(frame)
 
         # Read The Target
