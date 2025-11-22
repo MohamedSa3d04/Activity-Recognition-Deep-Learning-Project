@@ -34,7 +34,7 @@ def parse_track_annotation_line(line):
 # Give me the video path - Return you all clips annotations in annotations.txt file
 def get_video_annotations_dictionary(vid_path):
     if not os.path.exists(os.path.join(vid_path, 'annotations.txt')):
-        print(f'{vid_path[-1: -3]} not have annotations.txt') # Some videos don't have annotations.txt
+        print(f'{vid_path[-1: -3:-1]} not have annotations.txt') # Some videos don't have annotations.txt
         return None
     annotations_dir = os.path.join(vid_path, 'annotations.txt')
     annotations_dictionary = {}
