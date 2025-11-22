@@ -108,7 +108,7 @@ def get_frame_paths(main_path):
                 continue
 
             for frame_name in clips_annotations: # Moving in each clip in the video
-                frame_path = os.path.join(cur_vid_path, frame_name[-4], frame_name) #frame_name[-4] => Clip Name
+                frame_path = os.path.join(cur_vid_path, frame_name[:-4], frame_name) #frame_name[-4] => Clip Name
                 frame_target = clips_annotations[frame_name]
                 frames_paths_tragets.append((frame_path, frame_target))
 
