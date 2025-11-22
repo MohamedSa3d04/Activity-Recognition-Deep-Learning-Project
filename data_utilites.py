@@ -7,7 +7,7 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 import numpy as np
 from tqdm import tqdm
-from model_loader_utilites import preprocess_images
+from model_utilites import preprocess_images
 
 def parse_track_annotation_line(line):
     '''
@@ -44,7 +44,7 @@ def get_video_annotations_dictionary(vid_path):
     
     return annotations_dictionary
 
-def parsing_scense_annotations(main_path):
+def parsing_scense_annotations(main_path, image_level=False):
     '''
     In follwing punch of codes, I will try to have all mid-frame ids and annotation (scene-level)
     from each clip from each video (Used for BaseLine 1)!
@@ -63,29 +63,55 @@ def parsing_scense_annotations(main_path):
                 clip_frames = [frame_name for frame_name in os.listdir(cur_clip) if frame_name in video_annotation] # all frames in the current clip
                 
                 for frame in clip_frames: # Moving in each frame (only annotated) in the clip
-                    frame_path = os.path.join(cur_clip, frame)
-                    img = Image.open(frame_path).convert('RGB')
-                    img_tensor = preprocessor(img).unsqueeze(0)
                     ann = video_annotation[frame]
+                    if image_level:
+                        frame_path = os.path.join(cur_clip, frame)
+                        img = Image.open(frame_path).convert('RGB')
+                        img_tensor = preprocessor(img).unsqueeze(0)
+                        
 
-                    featrues = model(img_tensor.to(device)) #(T, 2048, 1, 1)
-                    featrues = featrues.view(2048, -1).cpu().detach().numpy()
+                        featrues = model(img_tensor.to(device)) #(T, 2048, 1, 1)
+                        featrues = featrues.view(2048, -1).cpu().detach().numpy()
 
+                        file_name = 'frames_features_extracted'
 
-                    save_path = os.path.join(cur_clip, 'frames_features_extracted')
+                    else: # collect players's boxes and it's labels
+                        
+                        
+                        file_name = 'players_features_extracted'
+
+                    save_path = os.path.join(cur_clip, file_name)
                     if not os.path.exists(save_path):
                         os.makedirs(save_path)
-                    np.savez(os.path.join(save_path, frame[:-4]), features=featrues, labels=np.array([ann]))
+                    np.savez(os.path.join(save_path, frame[:-4]), features=featrues, labels=np.array([ann])) # Saving the featrues repr. and labels
                     print(f"Saved: {save_path}")
                     
     except Exception as e:
             print(f"An error occurred: {e}")
        
-            
 
 
 
+# Get all middle-frames paths from each clip in the videos
+def get_frame_paths(main_path):
+    try:
+        frames_paths_tragets = []
+        videos_folders = os.listdir(main_path) # all folder in the main path folder
+        for video_name in tqdm(videos_folders):
+            cur_vid_path = os.path.join(main_path, video_name) #Having annotations.txt
+            clips_annotations = get_video_annotations_dictionary(cur_vid_path)
+            for frame_name in clips_annotations: # Moving in each clip in the video
+                frame_path = os.path.join(cur_vid_path, frame_name[-4], frame_name) #frame_name[-4] => Clip Name
+                frame_target = clips_annotations[frame_name]
+                frames_paths_tragets.append((frame_path, frame_target))
+        return frames_paths_tragets
 
+                
+               
+                    
+    except Exception as e:
+            print(f"An error occurred: {e}")
+       
     
 
 

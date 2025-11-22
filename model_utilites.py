@@ -37,7 +37,7 @@ def preprocess_images(image_level=True):
         # already croped box. just resize it
         preprocessor = transforms.Compose([
             transforms.Resize((224, 224)),
-            transforms.ToTensor(),
+            transforms.ToTensor(), #Self Scaling 0> [0, 1]
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
     
@@ -47,7 +47,7 @@ def preprocess_images(image_level=True):
     
     resnet = models.resnet50(pretrained=True)
 
-    feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc
+    feature_extractor = torch.nn.Sequential(*list(resnet.children())[:-1])  # remove final fc 
     feature_extractor = feature_extractor.to(device)
     feature_extractor.eval()
 
