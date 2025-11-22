@@ -5,8 +5,9 @@ from data_utilites import get_frame_paths
 
 
 class Data_Loader_BL1(Dataset):
-    def __init__(self):
+    def __init__(self, main_path):
         super().__init__()
-        all_paths = 0
+        frames_paths_tragets = get_frame_paths(main_path)
+        print(frames_paths_tragets[0])
 
 
