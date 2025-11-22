@@ -8,6 +8,6 @@ class Data_Loader_BL1(Dataset):
     def __init__(self, main_path):
         super().__init__()
         frames_paths_tragets = get_frame_paths(main_path)
-        print(frames_paths_tragets[0])
+        print(frames_paths_tragets)
 
 
