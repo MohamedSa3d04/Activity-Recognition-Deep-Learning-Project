@@ -4,7 +4,7 @@ from torchvision.transforms import transforms
 from torch.utils.data import Dataset, DataLoader
 from data_utilites import get_frame_paths
 from PIL import Image
-import os
+import os, time
 
 from torchvision.models import resnet50
 
@@ -106,31 +106,59 @@ def run(main_videos_path, models_path):
 
 
     # Training Loop
-    running_loss = 0.
     model.train()
-    for i in range(n_epochs):
-        for index, (frame_tensor, target) in enumerate(data_loader):
-            # get the output and calc the loss
-            output = model(frame_tensor.to(device)) 
-            loss = criterion(output, target.to(device))
 
-            # zero the optimizer (For not aggeregration)
+    for epoch in range(n_epochs):
+        epoch_loss = 0.0
+        correct = 0
+        total = 0
+        start_time = time.time()
+
+        for batch_idx, (inputs, targets) in enumerate(data_loader):
+
+            # Move data to GPU
+            inputs = inputs.to(device)
+            targets = targets.to(device)
+
+            # Forward
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+
+            # Backward
             optimizer.zero_grad()
-            loss.backward() # Compute gradients
-            optimizer.step() # Adjust learning weights
+            loss.backward()
+            optimizer.step()
 
-            # report loss
-            running_loss += loss.item()
-            if index % 20 == 0: # For each 25 batches Report loss
-                last_loss = running_loss / 25 # loss per batch
-                print(f'Epoch {i}, Batch {index} -> {last_loss}')
-                running_loss = 0
+            # Accumulate loss
+            epoch_loss += loss.item()
 
+            # Accuracy calculation
+            _, predicted = outputs.max(1)
+            correct += (predicted == targets).sum().item()
+            total += targets.size(0)
 
-         # For each 5 epchs save a copy version
-        if i % 5 == 0:
-            torch.save(model.state_dict(), f=os.path.join(model_folder_path, f'V{i}.pth'))
-            torch.save(model.state_dict(), f=last_version_path) #Override Last Version
-            print( f'V{i} Saved!')
-          
+            # Batch reporting
+            if batch_idx % 20 == 0:
+                print(f"Epoch [{epoch+1}/{n_epochs}] "
+                    f"Batch [{batch_idx}/{len(data_loader)}] "
+                    f"Loss: {loss.item():.4f}")
+
+        # Epoch summary
+        avg_loss = epoch_loss / len(data_loader)
+        accuracy = correct / total * 100
+        epoch_time = time.time() - start_time
+
+        print(f"\n--- Epoch {epoch+1} Summary ---")
+        print(f"Average Loss: {avg_loss:.4f}")
+        print(f"Accuracy: {accuracy:.2f}%")
+        print(f"Time: {epoch_time:.1f}s")
+        print("-----------------------------\n")
+
+        # Save checkpoint every 5 epochs
+        if (epoch + 1) % 5 == 0:
+            version_path = os.path.join(model_folder_path, f'V{epoch+1}.pth')
+            torch.save(model.state_dict(), version_path)
+            torch.save(model.state_dict(), last_version_path)
+            print(f"Checkpoint saved: V{epoch+1}\n")
+            
 
