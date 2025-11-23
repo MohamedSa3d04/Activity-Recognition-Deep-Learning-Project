@@ -63,7 +63,7 @@ def run(main_videos_path, models_path):
     # Folder to save Model Versions
     model_folder_path = os.path.join(models_path, 'BaseLine1')
     if not os.path.exists(model_folder_path):
-        os.os.makedirs(model_folder_path)
+        os.makedirs(model_folder_path)
 
     # Set-Up The Training
     # device:
