@@ -43,12 +43,11 @@ class Data_Loader_BL1(Dataset):
         frame_tensor = self.preprocessor(frame)
 
         # Read The Target
-        class_ = self.categories_dct[target]
-        target = [0] * 8
-        target[class_] = 1
+        class_index = self.categories_dct[target]
 
 
-        return frame_tensor, torch.tensor(target)
+
+        return frame_tensor, torch.tensor(class_index, dtype=torch.long)
     
     
 def run(main_videos_path, models_path):
@@ -128,5 +127,6 @@ def run(main_videos_path, models_path):
         if i % 5 == 0:
             torch.save(model.state_dict(), f=os.path.join(model_folder_path, f'V{i}.pth'))
             torch.save(model.state_dict(), f=last_version_path) #Override Last Version
+            print( f'V{i} Saved!')
           
 
