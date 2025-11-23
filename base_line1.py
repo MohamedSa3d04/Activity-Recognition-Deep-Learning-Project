@@ -51,7 +51,7 @@ class Data_Loader_BL1(Dataset):
         return frame_tensor, torch.tensor(target)
     
     
-def run(main_path):
+def run(main_path, models_path):
 
     # Let's dive in the training: 
     n_epochs = 25
@@ -61,9 +61,9 @@ def run(main_path):
     data_loader = DataLoader(dataset, 50, shuffle=True) 
 
     # Folder to save Model Versions
-    folder_path = os.path.join(main_path, 'Models', 'BaseLine1')
-    if not os.path.exists(folder_path):
-        os.mkdir(folder_path)
+    model_folder_path = os.path.join(models_path, 'BaseLine1')
+    if not os.path.exists(model_folder_path):
+        os.mkdir(model_folder_path)
 
     # Set-Up The Training
     # device:
@@ -75,7 +75,7 @@ def run(main_path):
 
     # Check If there is a checkpoint or not
     model = resnet50(pretrained=True)
-    last_version_path = os.path.join(folder_path, f'LastVersion.pth')
+    last_version_path = os.path.join(model_folder_path, f'LastVersion.pth')
     if os.path.exists(last_version_path):
         print("CheckPoint Existed!")
         state_dict = torch.load(last_version_path, map_location=device)
@@ -126,7 +126,7 @@ def run(main_path):
 
          # For each 5 epchs save a copy version
         if i % 5 == 0:
-            torch.save(model.state_dict(), f=os.path.join(folder_path, f'V{i}.pth'))
+            torch.save(model.state_dict(), f=os.path.join(model_folder_path, f'V{i}.pth'))
             torch.save(model.state_dict(), f=last_version_path) #Override Last Version
           
 
