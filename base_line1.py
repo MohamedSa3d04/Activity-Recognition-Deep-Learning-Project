@@ -51,19 +51,19 @@ class Data_Loader_BL1(Dataset):
         return frame_tensor, torch.tensor(target)
     
     
-def run(main_path, models_path):
+def run(main_videos_path, models_path):
 
     # Let's dive in the training: 
     n_epochs = 25
 
     # - Loading the data
-    dataset = Data_Loader_BL1(main_path)
+    dataset = Data_Loader_BL1(main_videos_path)
     data_loader = DataLoader(dataset, 50, shuffle=True) 
 
     # Folder to save Model Versions
     model_folder_path = os.path.join(models_path, 'BaseLine1')
     if not os.path.exists(model_folder_path):
-        os.mkdir(model_folder_path)
+        os.os.makedirs(model_folder_path)
 
     # Set-Up The Training
     # device:
