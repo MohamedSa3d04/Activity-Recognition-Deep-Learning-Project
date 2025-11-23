@@ -99,7 +99,9 @@ def run(main_videos_path, models_path):
 
     # Optimizer + Crietrion
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    #(only trainable params)
+    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()),
+                                lr=1e-4)
 
 
 
