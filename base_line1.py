@@ -80,14 +80,15 @@ def run(main_videos_path, models_path):
         state_dict = torch.load(last_version_path, map_location=device)
         model.load_state_dict(state_dict)
 
-    model.to(device)
+   
     model.fc = nn.Sequential(
         nn.Linear(model.fc.in_features, 512),
         nn.ReLU(),
         nn.Dropout(0.3),
         nn.Linear(512, 8)
         ) # Replace last layer with Specific New 8 output classes
-
+    
+    model.to(device)
     # Now let's freeze resinet layers except our new FC layers
     for parameter in model.parameters():
         parameter.requires_grad = False
