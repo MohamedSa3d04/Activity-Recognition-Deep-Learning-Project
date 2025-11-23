@@ -53,7 +53,7 @@ class Data_Loader_BL1(Dataset):
 def run(main_videos_path, models_path):
 
     # Let's dive in the training: 
-    n_epochs = 25
+    n_epochs = 10
 
     # - Loading the data
     dataset = Data_Loader_BL1(main_videos_path)
@@ -74,19 +74,19 @@ def run(main_videos_path, models_path):
 
     # Check If there is a checkpoint or not
     model = resnet50(pretrained=True)
+    model.fc = nn.Sequential(
+    nn.Linear(model.fc.in_features, 512),
+    nn.ReLU(),
+    nn.Dropout(0.3),
+    nn.Linear(512, 8)
+    ) # Replace last layer with Specific New 8 output classes
+
     last_version_path = os.path.join(model_folder_path, f'LastVersion.pth')
     if os.path.exists(last_version_path):
         print("CheckPoint Existed!")
         state_dict = torch.load(last_version_path, map_location=device)
         model.load_state_dict(state_dict)
 
-   
-    model.fc = nn.Sequential(
-        nn.Linear(model.fc.in_features, 512),
-        nn.ReLU(),
-        nn.Dropout(0.3),
-        nn.Linear(512, 8)
-        ) # Replace last layer with Specific New 8 output classes
     
     model.to(device)
     # Now let's freeze resinet layers except our new FC layers
