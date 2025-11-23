@@ -104,6 +104,7 @@ def run(main_videos_path, models_path):
 
 
     # Training Loop
+    running_loss = 0.
     model.train()
     for i in range(n_epochs):
         for index, (frame_tensor, target) in enumerate(data_loader):
