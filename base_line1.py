@@ -53,7 +53,7 @@ class Data_Loader_BL1(Dataset):
 def run(main_videos_path, models_path):
 
     # Let's dive in the training: 
-    n_epochs = 10
+    n_epochs = 40
 
     # - Loading the data
     dataset = Data_Loader_BL1(main_videos_path)

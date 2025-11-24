@@ -8,7 +8,6 @@ import torchvision.transforms as transforms
 import numpy as np
 from tqdm import tqdm
 from model_utilites import preprocess_images
-
 def parse_track_annotation_line(line):
     '''
     Get the annotations for each player which represented as a line
@@ -100,6 +99,7 @@ def get_frame_paths(main_path):
     try:
         frames_paths_tragets = []
         videos_folders = os.listdir(main_path) # all folder in the main path folder
+
         for video_name in tqdm(videos_folders):
             cur_vid_path = os.path.join(main_path, video_name) #Having annotations.txt
             clips_annotations = get_video_annotations_dictionary(cur_vid_path)
